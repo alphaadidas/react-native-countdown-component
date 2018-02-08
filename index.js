@@ -1,4 +1,5 @@
-import React, {PropTypes} from 'react';
+import PropTypes from 'prop-types';
+import React from 'react';
 import {
   StyleSheet,
   View,
@@ -12,8 +13,8 @@ const DEFAULT_BG_COLOR = '#FAB913';
 const DEFAULT_TIME_TXT_COLOR = '#000';
 const DEFAULT_DIGIT_TXT_COLOR = '#000';
 
-const CountDown = React.createClass({
-  propTypes: {
+class CountDown extends React.Component {
+  static propTypes = {
     digitBgColor: PropTypes.string,
     digitTxtColor: PropTypes.string,
     timeTxtColor: PropTypes.string,
@@ -21,26 +22,24 @@ const CountDown = React.createClass({
     until: PropTypes.number,
     onFinish: PropTypes.func,
     onPress: PropTypes.func,
-  },
+  };
 
-  getInitialState() {
-    return {
-      until: this.props.until,
-    };
-  },
+  state = {
+    until: this.props.until,
+  };
 
   componentDidMount() {
     if (this.props.onFinish) {
       this.onFinish = _.once(this.props.onFinish);
     }
     this.timer = setInterval(this.updateTimer, 1000);
-  },
+  }
 
   componentWillUnmount() {
     clearInterval(this.timer);
-  },
+  }
 
-  getTimeLeft() {
+  getTimeLeft = () => {
     const {until} = this.state;
     return {
       seconds: until % 60,
@@ -48,9 +47,9 @@ const CountDown = React.createClass({
       hours: parseInt(until / (60 * 60), 10) % 24,
       days: parseInt(until / (60 * 60 * 24), 10),
     };
-  },
+  };
 
-  updateTimer() {
+  updateTimer = () => {
     const {until} = this.state;
 
     if (until <= 1) {
@@ -61,9 +60,9 @@ const CountDown = React.createClass({
     }
 
     this.setState({until: until - 1});
-  },
+  };
 
-  renderDigit(d) {
+  renderDigit = (d) => {
     const {digitBgColor, digitTxtColor, size} = this.props;
     return (
       <View style={[
@@ -80,9 +79,9 @@ const CountDown = React.createClass({
         </Text>
       </View>
     );
-  },
+  };
 
-  renderDoubleDigits(label, digits) {
+  renderDoubleDigits = (label, digits) => {
     const {timeTxtColor, size} = this.props;
 
     return (
@@ -99,9 +98,9 @@ const CountDown = React.createClass({
         </Text>
       </View>
     );
-  },
+  };
 
-  renderCountDown() {
+  renderCountDown = () => {
     const {until} = this.state;
     const {days, hours, minutes, seconds} = this.getTimeLeft();
     const newTime = sprintf('%02d:%02d:%02d:%02d', days, hours, minutes, seconds).split(':');
@@ -118,7 +117,7 @@ const CountDown = React.createClass({
         {this.renderDoubleDigits('Seconds', newTime[3])}
       </Component>
     );
-  },
+  };
 
   render() {
     return (
@@ -127,7 +126,7 @@ const CountDown = React.createClass({
       </View>
     );
   }
-});
+}
 
 CountDown.defaultProps = {
   digitBgColor: DEFAULT_BG_COLOR,
